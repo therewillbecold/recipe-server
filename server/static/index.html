@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="2.css">
+</head>
+<body>
+    <h1>I am index </h1>
+    <ul>
+        
+    </ul>
+    <script src="axios.js"></script>
+    <script>
+        // axios.get('/animal')
+        // .then(res => {
+        //     console.log(res);
+        // })
+
+//         var str = ''
+//         axios.post('/animal')
+//         .then(res =>{
+//             console.log(res);
+//             res.data.data.forEach(item => {
+//                 str += `<li>${item.color}</li>`
+//             })
+//             document.querySelector('ul').innerHTML = str
+//         })
+
+var str = ''
+axios.get('/animal')
+.then(res =>{
+    res.data.data.forEach(item => {
+        str += `
+        <li>species: ${item.species}</li>
+        <li>color: ${item.color}</li>
+        <li>food: ${item.food}</li>
+            `
+    })
+    document.querySelector('ul').innerHTML = str
+})
+
+    </script>
+</body>
+</html>

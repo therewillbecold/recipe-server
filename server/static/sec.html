@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        ul {
+            list-style: none;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>I am the sec page</h1>
+    <script src="axios.js"></script>
+    <script>
+        var str = '<ul>'
+        axios.post('/animal')
+            .then((res) => {
+                res.data.data.forEach(item => {
+                    str += `
+                  <li>species: ${item.species}</li>
+                  <li>color: ${item.color}</li>
+                  <li>food: ${item.food}</li>
+                  `
+                })
+                str += '</ul>'
+                document.body.innerHTML = str;
+            })
+    </script>
+</body>
+
+</html>
