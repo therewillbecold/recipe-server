@@ -7,7 +7,7 @@ import cors from '@koa/cors'
 
 const app = new Koa()
 const router = new Router()
-const port = 1234
+const port = 60000
 
 // app.use(async (ctx, next) => {
 //   ctx.body = {
@@ -35,6 +35,7 @@ const port = 1234
 app.use(cors())
 
 /*接口*/
+// 根据种类获取菜谱
 router.get('/api/recipe/:categoryId', async ctx => {
   console.log(ctx.params)
   const categoryId = ctx.params.categoryId
@@ -45,11 +46,43 @@ router.get('/api/recipe/:categoryId', async ctx => {
     massage: 'success'
   }
 })
-
+// 获取所有的菜单种类
 router.get('/api/categories', async ctx => {
   ctx.body = {
     status: 0,
     data: require('./recipe-data/categories.json'),
+    message: 'success'
+  }
+})
+/**
+ *  获取菜单详情
+ * 支持的参数
+ * recipeId: 菜谱的id
+ * keyword: 菜单搜索关键词
+ */
+let allRecipes = []
+let _recipeData = require('./recipe-data/recipe.json')
+Object.values(_recipeData).forEach((arr) => {
+  allRecipes = allRecipes.concat(arr)
+})
+
+router.get('/api/detail', async ctx => {
+  console.log(ctx.query);
+  const { recipeId, keyword } = ctx.query
+  let responseData = []
+  if (recipeId) {
+    responseData = [allRecipes.find(item => item.id === recipeId)]
+  } else if (typeof keyword !== 'undefined') {
+    responseData = allRecipes.filter(item => {
+      return item.title.includes(keyword) || item.tags.includes(keyword)
+    })
+  }
+
+  console.log(responseData);
+
+  ctx.body = {
+    status: 0,
+    data: responseData,
     message: 'success'
   }
 })
