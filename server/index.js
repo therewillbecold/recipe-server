@@ -55,10 +55,10 @@ router.get('/api/categories', async ctx => {
   }
 })
 /**
- *  获取菜单详情
+ *  获取指定菜单详情
  * 支持的参数
  * recipeId: 菜谱的id
- * keyword: 菜单搜索关键词
+
  */
 let allRecipes = []
 let _recipeData = require('./recipe-data/recipe.json')
@@ -67,19 +67,16 @@ Object.values(_recipeData).forEach((arr) => {
 })
 
 router.get('/api/detail', async ctx => {
-  console.log(ctx.query);
-  const { recipeId, keyword } = ctx.query
+  const { ids } = ctx.query
+  console.log('api/detail:', ids)
+  let res = []
+  try{
+    res = JSON.parse(decodeURIComponent(ids))
+  } catch(err) {}
   let responseData = []
-  if (recipeId) {
-    responseData = [allRecipes.find(item => item.id === recipeId)]
-  } else if (typeof keyword !== 'undefined') {
-    responseData = allRecipes.filter(item => {
-      return item.title.includes(keyword) || item.tags.includes(keyword)
-    })
+  if (res && res.length > 0) {
+    responseData = allRecipes.filter(item => res.includes(item.id))
   }
-
-  console.log(responseData);
-
   ctx.body = {
     status: 0,
     data: responseData,
@@ -87,51 +84,26 @@ router.get('/api/detail', async ctx => {
   }
 })
 
-router.get('/animal', async (ctx, next) => {
+/**
+ * 搜索菜单
+ * 支持的参数
+ * keyword: 菜单搜索关键词
+ */
+router.get('/api/search', async ctx => {
+  const { keyword } = ctx.query
+  let responseData = []
+  if (typeof keyword !== 'undefined') {
+    responseData = allRecipes.filter(item => {
+      return item.title.includes(keyword) || item.tags.includes(keyword)
+    })
+  }
   ctx.body = {
     status: 0,
-    data: [
-      {
-        species: 'bird',
-        color: 'black',
-        food: 'worm'
-      },
-      {
-        species: 'cat',
-        color: 'orange',
-        food: 'fish'
-      },
-      {
-        species: 'dog',
-        color: 'brown',
-        food: 'pork'
-      }
-    ]
+    data: responseData,
+    message: 'success'
   }
 })
 
-router.post('/animal', async ctx => {
-  ctx.body = {
-    status: 0,
-    data: [
-      {
-        species: 'snake',
-        color: 'black',
-        food: 'rat'
-      },
-      {
-        species: 'shark',
-        color: 'blue',
-        food: 'fish'
-      },
-      {
-        species: 'whale',
-        color: 'blue',
-        food: 'fish'
-      }
-    ]
-  }
-})
 
 // function readFile(fileDir) {
 //   return new Promise((resolve, reject) => {
